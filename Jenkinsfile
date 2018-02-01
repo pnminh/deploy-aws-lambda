@@ -8,7 +8,7 @@ node {
         //download file
         fileOperations([fileDownloadOperation(password: '', targetFileName: "$fileName", targetLocation: '.', url: "$url", userName: '')])
         withAWS(credentials: 'inf_aws_secret', region: 'us-east-1') {
-            s3Upload(acl: 'Private', bucket: 'mp-codepipeline', cacheControl: '', excludePathPattern: '', file: "$fileName", includePathPattern: '', metadatas: [''], path: 'lambda-functions', workingDir: '.')
+            s3Upload(bucket: 'mp-codepipeline', file: "$fileName",  path: 'lambda-functions')
         }
 
 
