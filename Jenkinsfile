@@ -10,7 +10,7 @@ node {
         //upload to s3
         //create lambda function
         lambda = sh(
-                script: 'deploy-aws-lambda minh.pham$ aws cloudformation create-stack --stack-name minh-stack --template-body file://java-lambda-cloudformation.yaml',
+                script: 'aws cloudformation create-stack --stack-name minh-stack --template-body file://java-lambda-cloudformation.yaml',
                 returnStdout: true
         ).trim()
 
