@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MimePreprocessLambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: "mp-codepipeline"
+        S3Key: "lambda-functions/java-lambda-sample-1.0.1.jar"
+      FunctionName:
+        Fn::Sub: "minh-lambda-test"
+      Handler: minh.gradle.lambda.LambdaRequestHandler::handleRequest
+      MemorySize: 1024
+      Role: arn:aws:iam::195702235524:role/service-role/lambda-canary
+      Runtime: java8
+      Timeout: 90
