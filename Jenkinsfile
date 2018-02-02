@@ -3,6 +3,7 @@ node {
     deleteDir()
     // Mark the code checkout 'stage'....
     stage('Download artifact and push on s3 bucket') {
+        checkout scm
         url = 'http://localhost:8081/artifactory/example-repo-local/com/minh/aws/java-lambda-sample/1.0.1/java-lambda-sample-1.0.1.jar';
         fileName = url.substring( url.lastIndexOf('/')+1, url.length() );
         //download file
