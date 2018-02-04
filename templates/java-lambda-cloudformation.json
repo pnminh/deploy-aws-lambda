@@ -26,6 +26,10 @@
       "MinValue": "128",
       "MaxValue": "1536",
       "Default": "128"
+    },
+    "Lambda1Timeout":{
+      "Type": "Number",
+      "Description": "lambda processing timeout"
     }
   },
   "Resources": {
@@ -45,7 +49,7 @@
         "MemorySize": {"Ref": "Lambda1MemorySize"},
         "Role": "{{Lambda1Role}}",
         "Runtime": "java8",
-        "Timeout": 90
+        "Timeout": {"Ref": "Lambda1Timeout"}
       }
     }
   }
