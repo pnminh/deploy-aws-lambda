@@ -46,13 +46,13 @@ node {
                 stackUpdateSuccessful = sh(
                         script: "aws cloudformation update-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
                         returnStatus: true
-                ).trim()
+                )
                 if(stackUpdateSuccessful != null){
                     print "Stack update not successful, try updating with existing stack"
                     stackUpdateSuccessful = sh(
                             script: "aws cloudformation update-stack --stack-name $awsStackName --use-previous-template",
                             returnStatus: true
-                    ).trim()
+                    )
                 }
             }
         }
