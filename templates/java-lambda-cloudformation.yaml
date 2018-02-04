@@ -18,8 +18,7 @@ Parameters:
   Lambda1MemorySize:
           Type: Number
           Description: The artifact to deploy
-  Lambda1Timeout:
-            Type: Number
+
 
 Resources:
   MimePreprocessLambda:
@@ -35,4 +34,4 @@ Resources:
       MemorySize: "{{Lambda1MemorySize}}"
       Role: "{{Lambda1Role}}"
       Runtime: java8
-      Timeout: "{{Lambda1Timeout}}"
+      Timeout: 90
