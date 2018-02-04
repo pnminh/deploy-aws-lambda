@@ -15,27 +15,33 @@ node {
         //this will check the current branch (with *), and only keep the branch name (omit * and space)
         GIT_BRANCH = utils.getGitBranch()
     }
-    if(GIT_BRANCH == 'dev_aws'){
+    if (GIT_BRANCH == 'dev_aws') {
         stage('Download artifact and push on s3 bucket') {
             //reads property file and create parameter strings
             //using Pipeline Utility Steps plugin
             def props = readProperties file: 'environments/cloudformation-dev.properties'
             def artifactName = props['Lambda1ArtifactName']
             url = "http://localhost:8081/artifactory/snapshot-repo/com/minh/aws/java-lambda-sample/1.0.5-SNAPSHOT/${artifactName}"
-            fileName = url.substring( url.lastIndexOf('/')+1, url.length() );
+            fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
             //download file
             //fileOperations([fileDownloadOperation(password: '', targetFileName: "$fileName", targetLocation: '.', url: "$url", userName: '')])
-            def output="${rootDir}/${fileName}"
+            def output = "${rootDir}/${fileName}"
             sh "curl -L ${url} -o  $output"
             //upload to s3
             sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${artifactName}"
+            //check if stack exists
+            stackExists = sh "aws cloudformation describe-stacks --stack-name ${awsStackName}"
             //create lambda function
             def paramString = "";
-            props.each{ k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
-            lambda = sh(
-                    script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
-                    returnStdout: true
-            ).trim()
+            props.each { k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
+            if (stackExists != 0) {
+                lambda = sh(
+                        script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
+                        returnStdout: true
+                ).trim()
+            }else{
+                print "Stack already exists."
+            }
         }
     }
 
