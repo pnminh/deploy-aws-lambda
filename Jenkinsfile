@@ -10,7 +10,7 @@ node {
     def rootDir = pwd()
     def utils = load "${rootDir}/jenkins-scripts/Utils.groovy"
     def jsonConvert = load "${rootDir}/jenkins-scripts/JsonConverter.groovy"
-    def templateFile = load "${rootDir}/templates/report.txt.groovy"
+    def templateFile = libraryResource('report.txt.groovy')
     stage('Download artifact and push on s3 bucket') {
         url = 'http://localhost:8081/artifactory/example-repo-local/com/minh/aws/java-lambda-sample/1.0.1/java-lambda-sample-1.0.1.jar';
         fileName = url.substring( url.lastIndexOf('/')+1, url.length() );
