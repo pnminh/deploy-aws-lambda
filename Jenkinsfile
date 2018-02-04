@@ -1,6 +1,4 @@
 node {
-    def rootDir = pwd()
-    def utils = load "${rootDir}/jenkins-scripts/Utils.groovy "
     // Clean workspace before doing anything
     deleteDir()
     // Mark the code checkout 'stage'....
@@ -9,6 +7,8 @@ node {
         // Checkout code from repository and update any submodules
         checkout scm
     }
+    def rootDir = pwd()
+    def utils = load "${rootDir}/jenkins-scripts/Utils.groovy"
     stage('Download artifact and push on s3 bucket') {
         url = 'http://localhost:8081/artifactory/example-repo-local/com/minh/aws/java-lambda-sample/1.0.1/java-lambda-sample-1.0.1.jar';
         fileName = url.substring( url.lastIndexOf('/')+1, url.length() );
