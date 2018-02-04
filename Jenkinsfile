@@ -21,14 +21,14 @@ node {
             //using Pipeline Utility Steps plugin
             def props = readProperties file: 'environments/cloudformation-dev.properties'
             def artifactName = props['Lambda1ArtifactName']
-            url = "http://localhost:8081/artifactory/snapshot-repo/com/minh/aws/java-lambda-sample/1.0.5-SNAPSHOT/${artifactName}";
+            url = "http://localhost:8081/artifactory/snapshot-repo/com/minh/aws/java-lambda-sample/1.0.5-SNAPSHOT/${artifactName}"
             fileName = url.substring( url.lastIndexOf('/')+1, url.length() );
             //download file
             //fileOperations([fileDownloadOperation(password: '', targetFileName: "$fileName", targetLocation: '.', url: "$url", userName: '')])
             def output="${rootDir}/${fileName}"
             sh "curl -L ${url} -o  $output"
             //upload to s3
-            sh "aws s3 cp ${${artifactName}} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${artifactName}"
+            sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${artifactName}"
             //create lambda function
             def paramString = "";
             props.each{ k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
