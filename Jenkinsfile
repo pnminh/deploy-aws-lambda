@@ -31,7 +31,7 @@ node {
             def paramString = "";
             props.each{ k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
             lambda = sh(
-                    script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
+                    script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.json",
                     returnStdout: true
             ).trim()
         }
