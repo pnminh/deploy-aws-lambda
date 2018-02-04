@@ -32,6 +32,6 @@ Resources:
       FunctionName: { 'Fn::Sub': dev-minh-lambda-test }
       Handler: 'minh.gradle.lambda.LambdaRequestHandler::handleRequest'
       MemorySize: { Ref: Lambda1MemorySize }
-      Role: '{{Lambda1Role}}'
+      Role: { Ref: Lambda1Role }
       Runtime: java8
       Timeout: { Ref: Lambda1Timeout }
