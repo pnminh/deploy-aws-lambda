@@ -33,7 +33,6 @@ node {
             stackExists = sh (
                     script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text",
                     returnStatus:true)
-            print 'stackExists ' + stackExists
             //create lambda function
             def paramString = "";
             props.each { k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
@@ -44,6 +43,10 @@ node {
                 ).trim()
             }else{
                 print "Stack already exists."
+                lambda = sh(
+                        script: "aws cloudformation update-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
+                        returnStdout: true
+                ).trim()
             }
         }
     }
