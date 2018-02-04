@@ -32,7 +32,7 @@ Resources:
       FunctionName:
         Fn::Sub: "dev-minh-lambda-test"
       Handler: minh.gradle.lambda.LambdaRequestHandler::handleRequest
-      MemorySize: {{Lambda1MemorySize}}
+      MemorySize: "{{Lambda1MemorySize}}"
       Role: "{{Lambda1Role}}"
       Runtime: java8
-      Timeout: {{Lambda1Timeout}}
+      Timeout: "{{Lambda1Timeout}}"
