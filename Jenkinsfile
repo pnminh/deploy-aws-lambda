@@ -17,17 +17,19 @@ node {
     }
     if(GIT_BRANCH == 'dev_aws'){
         stage('Download artifact and push on s3 bucket') {
-            url = 'http://localhost:8081/artifactory/snapshot-repo/com/minh/aws/java-lambda-sample/1.0.5-SNAPSHOT/java-lambda-sample-1.0.5-SNAPSHOT.jar';
+            //reads property file and create parameter strings
+            //using Pipeline Utility Steps plugin
+            def props = readProperties file: 'environments/cloudformation-dev.properties'
+            def artifactName = props['Lambda1ArtifactName']
+            url = "http://localhost:8081/artifactory/snapshot-repo/com/minh/aws/java-lambda-sample/1.0.5-SNAPSHOT/${artifactName}";
             fileName = url.substring( url.lastIndexOf('/')+1, url.length() );
             //download file
             //fileOperations([fileDownloadOperation(password: '', targetFileName: "$fileName", targetLocation: '.', url: "$url", userName: '')])
             def output="${rootDir}/${fileName}"
             sh "curl -L ${url} -o  $output"
             //upload to s3
-
+            sh "aws s3 cp ${${artifactName}} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${artifactName}"
             //create lambda function
-            //reads property file and create parameter strings
-            def props = readProperties file: 'environments/cloudformation-dev.properties'
             def paramString = "";
             props.each{ k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
             lambda = sh(
