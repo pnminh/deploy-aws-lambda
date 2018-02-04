@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  LambdaS3Bucket:
+    Type: String
+    Description: The S3 bucket to retrieve Lambda function package
+  LambdaS3Directory:
+      Type: String
+      Description: The S3 bucket directory that keeps all lambda functions
+      MinLength: '0'
+  Lambda1ArtifactName:
+      Type: String
+      Description: The artifact to deploy
+      MinLength: '0'
+  Lambda1Role:
+        Type: String
+        Description: The role to be used with lambda function
+        MinLength: '0'
+  Lambda1MemorySize:
+          Type: Number
+          Description: The artifact to deploy
+  Lambda1Timeout:
+            Type: Number
+
+Resources:
+  MimePreprocessLambda:
+    Type: "AWS::Lambda::Function"
+    Properties:
+      Code:
+        S3Bucket:
+          Fn::Sub: "{{LambdaS3Bucket}}"
+        S3Key: "{{LambdaS3Directory}}/{{Lambda1ArtifactName}}"
+      FunctionName:
+        Fn::Sub: "dev-minh-lambda-test"
+      Handler: minh.gradle.lambda.LambdaRequestHandler::handleRequest
+      MemorySize: {{Lambda1MemorySize}}
+      Role: "{{Lambda1Role}}"
+      Runtime: java8
+      Timeout: {{Lambda1Timeout}}
