@@ -14,7 +14,7 @@ node {
         //this will check the current branch (with *), and only keep the branch name (omit * and space)
         GIT_BRANCH = utils.getGitBranch()
     }
-    if($GIT_BRANCH == 'dev_aws'){
+    if(GIT_BRANCH == 'dev_aws'){
         stage('Download artifact and push on s3 bucket') {
             url = 'http://localhost:8081/artifactory/snapshot-repo/com/minh/aws/java-lambda-sample/1.0.5-SNAPSHOT/java-lambda-sample-1.0.5-SNAPSHOT.jar';
             fileName = url.substring( url.lastIndexOf('/')+1, url.length() );
