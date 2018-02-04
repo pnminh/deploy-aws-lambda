@@ -16,7 +16,7 @@ Parameters:
         Description: The role to be used with lambda function
         MinLength: '0'
   Lambda1MemorySize:
-          Type: Number
+          Type: String
           Description: The artifact to deploy
 
 
@@ -31,7 +31,7 @@ Resources:
       FunctionName:
         Fn::Sub: "dev-minh-lambda-test"
       Handler: minh.gradle.lambda.LambdaRequestHandler::handleRequest
-      MemorySize: "{{Lambda1MemorySize}}"
+      MemorySize: {{Lambda1MemorySize}}
       Role: "{{Lambda1Role}}"
       Runtime: java8
       Timeout: 90
