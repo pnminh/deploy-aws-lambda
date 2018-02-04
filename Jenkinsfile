@@ -28,7 +28,7 @@ node {
         GIT_BRANCH = utils.getGitBranch()
     }
     stage('generate template'){
-        variables = [ "job": currentBuild.rawBuild.getFullDisplayName() ]
+        variables = [ "job": "Hello $GIT_BRANCH" ]
         output = jsonConvert.renderTemplate(templateFile, variables)
         print output
     }
