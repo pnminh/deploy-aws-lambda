@@ -16,8 +16,11 @@ Parameters:
         Description: The role to be used with lambda function
         MinLength: '0'
   Lambda1MemorySize:
-          Type: String
-          Description: The artifact to deploy
+          Type: Number
+          Description: Memory size between 128 MB - 1536 MB and multiple of 64
+          MinValue: '128'
+          MaxValue: '1536'
+          Default: '128'
 
 
 Resources:
@@ -31,7 +34,7 @@ Resources:
       FunctionName:
         Fn::Sub: "dev-minh-lambda-test"
       Handler: minh.gradle.lambda.LambdaRequestHandler::handleRequest
-      MemorySize: {{Lambda1MemorySize}}
+      MemorySize: '{{Lambda1MemorySize}}'
       Role: "{{Lambda1Role}}"
       Runtime: java8
       Timeout: 90
