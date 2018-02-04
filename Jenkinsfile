@@ -1,6 +1,6 @@
 node {
     def rootDir = pwd()
-    def utils = load "${rootDir}/jenkins-script/Utils.groovy "
+    def utils = load "${rootDir}/jenkins-scripts/Utils.groovy "
     // Clean workspace before doing anything
     deleteDir()
     // Mark the code checkout 'stage'....
