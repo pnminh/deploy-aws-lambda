@@ -35,4 +35,4 @@ Resources:
       MemorySize: "{{Lambda1MemorySize}}"
       Role: "{{Lambda1Role}}"
       Runtime: java8
-      Timeout: "{{Lambda1Timeout}}"
+      Timeout: {{Lambda1Timeout}}

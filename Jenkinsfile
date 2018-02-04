@@ -9,7 +9,8 @@ node {
     }
     def rootDir = pwd()
     def utils = load "${rootDir}/jenkins-scripts/Utils.groovy"
-
+    //aws stack
+    def awsStackName = 'dev-minh-stack'
     stage('Get branch name') {
         //this will check the current branch (with *), and only keep the branch name (omit * and space)
         GIT_BRANCH = utils.getGitBranch()
@@ -23,13 +24,14 @@ node {
             def output="${rootDir}/${fileName}"
             sh "curl -L ${url} -o  $output"
             //upload to s3
+
             //create lambda function
             //reads property file and create parameter strings
-            def props = readProperties file: 'environments/dev.properties'
+            def props = readProperties file: 'environments/cloudformation-dev.properties'
             def paramString = "";
             props.each{ k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
             lambda = sh(
-                    script: "aws cloudformation create-stack --stack-name dev-minh-stack --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
+                    script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
                     returnStdout: true
             ).trim()
         }
