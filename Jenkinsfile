@@ -27,9 +27,9 @@ node {
             //reads property file and create parameter strings
             def props = readProperties file: 'environments/dev.properties'
             def paramString = "";
-            props.each{ k, v -> paramString += "ParameterKey=${k},ParameterValue=${v}" }
+            props.each{ k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
             lambda = sh(
-                    script: "aws cloudformation create-stack --stack-name ${GIT_BRANCH}-minh-stack --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
+                    script: "aws cloudformation create-stack --stack-name dev-minh-stack --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
                     returnStdout: true
             ).trim()
         }
