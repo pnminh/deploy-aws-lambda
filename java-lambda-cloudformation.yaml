@@ -1,4 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
+Parameters:
+  ArtifactName:
+    Type: String
+    Description: The artifact to deploy
+    MinLength: '0'
 Resources:
   MimePreprocessLambda:
     Type: "AWS::Lambda::Function"
@@ -6,9 +11,9 @@ Resources:
       Code:
         S3Bucket:
           Fn::Sub: "mp-codepipeline"
-        S3Key: "lambda-functions/java-lambda-sample-1.0.1.jar"
+        S3Key: "lambda-functions/{{ArtifactName}}"
       FunctionName:
-        Fn::Sub: "minh-lambda-test"
+        Fn::Sub: "dev-minh-lambda-test"
       Handler: minh.gradle.lambda.LambdaRequestHandler::handleRequest
       MemorySize: 1024
       Role: arn:aws:iam::195702235524:role/service-role/lambda-canary
