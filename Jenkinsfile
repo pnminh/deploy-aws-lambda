@@ -9,6 +9,7 @@ node {
     }
     def rootDir = pwd()
     def utils = load "${rootDir}/jenkins-scripts/Utils.groovy"
+    def props_file = 'environments/cloudformation-dev.properties';
     //aws stack
     def awsStackName = 'dev-minh-stack'
     stage('Get branch name') {
@@ -19,7 +20,7 @@ node {
         stage('Download artifact and push on s3 bucket') {
             //reads property file and create parameter strings
             //using Pipeline Utility Steps plugin
-            def props = readProperties file: 'environments/cloudformation-dev.properties'
+            def props = readProperties file: props_file
             def artifactName = props['Lambda1ArtifactName']
             url = "http://localhost:8081/artifactory/snapshot-repo/com/minh/aws/java-lambda-sample/1.0.5-SNAPSHOT/${artifactName}"
             fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
@@ -29,8 +30,9 @@ node {
             sh "curl -L ${url} -o  $output"
             //upload to s3
             //need to use unique name for snapshot, since aws requires changes in params/template to make the update
-            def timestamp = sh(script:"date +%s",returnStdout: true).trim()
-            props['Lambda1ArtifactName'] +="-"+timestamp
+           /* def timestamp = sh(script:"date +%s",returnStdout: true).trim()
+            props['Lambda1ArtifactName'] +="-"+timestamp*/
+
             sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['Lambda1ArtifactName']}"
             //check if stack exists
             stackExists = sh (
@@ -51,6 +53,11 @@ node {
                         returnStatus: true
                 )
             }
+            //increase template version to 1 to make it unique
+            props['TemplateVersion'] += props['TemplateVersion'].toInteger()+1
+            textToWrite=""
+            props.each { k, v -> textToWrite += "${k}:${v}/n" }
+            writeFile file: props_file, text: textToWrite
         }
     }
 

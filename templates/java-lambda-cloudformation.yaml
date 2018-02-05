@@ -24,6 +24,11 @@ Parameters:
   Lambda1Timeout:
     Type: Number
     Description: 'lambda processing timeout'
+  TemlateVersion:
+    Type: Number
+    Description: 'Template version'
+Metadata:
+  Version:{Ref: TemlateVersion}
 Resources:
   MimePreprocessLambda:
     Type: 'AWS::Lambda::Function'
