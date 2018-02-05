@@ -3,7 +3,7 @@ node {
     deleteDir()
     // Mark the code checkout 'stage'....
     stage('Stage Checkout') {
-
+        echo sh(returnStdout: true, script: 'env')
         // Checkout code from repository and update any submodules
         checkout scm
     }
