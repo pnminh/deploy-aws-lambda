@@ -28,7 +28,10 @@ node {
             def output = "${rootDir}/${fileName}"
             sh "curl -L ${url} -o  $output"
             //upload to s3
-            sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${artifactName}"
+            //need to use unique name for snapshot, since aws requires changes in params/template to make the update
+            def timestamp = sh(script:"date +%s",returnStdout: true)
+            props['Lambda1ArtifactName'] +=timestamp
+            sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['Lambda1ArtifactName']}"
             //check if stack exists
             stackExists = sh (
                     script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text",
