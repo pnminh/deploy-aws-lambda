@@ -31,9 +31,9 @@ node {
             //upload to s3
             //need to use timestamp in lambda tag to force update to lambda stack
            def timestamp = sh(script:"date +%s",returnStdout: true).trim()
-            props['Timestamp'] = timestamp
+            props['ArtifactName'] +=  "-$timestamp"
 
-            sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['Lambda1ArtifactName']}"
+            sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['ArtifactName']}"
             //check if stack exists
             stackExists = sh (
                     script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text",
