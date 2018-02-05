@@ -29,9 +29,9 @@ node {
             def output = "${rootDir}/${fileName}"
             sh "curl -L ${url} -o  $output"
             //upload to s3
-            //need to use unique name for snapshot, since aws requires changes in params/template to make the update
-           /* def timestamp = sh(script:"date +%s",returnStdout: true).trim()
-            props['Lambda1ArtifactName'] +="-"+timestamp*/
+            //need to use timestamp in lambda tag to force update to lambda stack
+           def timestamp = sh(script:"date +%s",returnStdout: true).trim()
+            props['Timestamp'] = timestamp
 
             sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['Lambda1ArtifactName']}"
             //check if stack exists
@@ -39,7 +39,7 @@ node {
                     script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text",
                     returnStatus:true)
             //create lambda function
-            def paramString = "";
+            def paramString = ""
             props.each { k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
             if (stackExists != 0) {
                 lambda = sh(
@@ -52,12 +52,8 @@ node {
                         script: "aws cloudformation update-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
                         returnStatus: true
                 )
+
             }
-            //increase template version to 1 to make it unique
-            props['TemplateVersion'] += (int)props['TemplateVersion']+1
-            textToWrite=""
-            props.each { k, v -> textToWrite += "${k}:${v}\n" }
-            writeFile file: props_file, text: textToWrite
         }
     }
 

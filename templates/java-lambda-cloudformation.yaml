@@ -24,11 +24,9 @@ Parameters:
   Lambda1Timeout:
     Type: Number
     Description: 'lambda processing timeout'
-  TemplateVersion:
+  Timestamp:
     Type: Number
-    Description: 'Template version'
-Metadata:
-  Version:{Ref: TemplateVersion}
+    Description: 'Timestamp of stack update'
 Resources:
   MimePreprocessLambda:
     Type: 'AWS::Lambda::Function'
@@ -40,3 +38,7 @@ Resources:
       Role: { Ref: Lambda1Role }
       Runtime: java8
       Timeout: { Ref: Lambda1Timeout }
+      Tags:
+        -
+          Key: LambdaVersion
+          Value: { Ref: Timestamp }
