@@ -33,7 +33,7 @@ Resources:
     Properties:
       Code: { S3Bucket: { Ref: LambdaS3Bucket }, S3Key: { 'Fn::Join': ["/",[{ Ref: LambdaS3Directory }, { Ref: Lambda1ArtifactName }]] } }
       FunctionName: { 'Fn::Sub': dev-minh-lambda-test }
-      Handler: 'minh.gradle.lambda.LambdaRequestHandler::handleRequest'
+      Handler: 'com.dice.aws.lambda.LambdaRequestHandler::handleRequest'
       MemorySize: { Ref: Lambda1MemorySize }
       Role: { Ref: Lambda1Role }
       Runtime: java8
