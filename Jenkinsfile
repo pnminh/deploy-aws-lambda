@@ -54,9 +54,9 @@ node {
                 )
             }
             //increase template version to 1 to make it unique
-            props['TemplateVersion'] += props['TemplateVersion'].toInteger()+1
+            props['TemplateVersion'] += (int)props['TemplateVersion']+1
             textToWrite=""
-            props.each { k, v -> textToWrite += "${k}:${v}/n" }
+            props.each { k, v -> textToWrite += "${k}:${v}\n" }
             writeFile file: props_file, text: textToWrite
         }
     }
