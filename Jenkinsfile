@@ -8,14 +8,13 @@ node {
         checkout scm
     }
     def rootDir = pwd()
-    def utils = load "${rootDir}/jenkins-scripts/Utils.groovy"
-    def props_file = 'environments/cloudformation-dev.properties';
+    def props_file = 'environments/cloudformation-dev.properties'
     //aws stack
     def awsStackName = 'dev-minh-stack'
     def artifactoryUrl = 'http://localhost:8081/artifactory'
     def snapshotRepo = 'snapshot-repo'
     def releaseRepo = 'release-repo'
-    if (env.version.contains("SNAPSHOT"))s {
+    if (env.version.contains("SNAPSHOT")) {
         stage('Download artifact and push on s3 bucket') {
             //reads property file and create parameter strings
             //using Pipeline Utility Steps plugin
