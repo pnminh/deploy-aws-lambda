@@ -12,17 +12,17 @@ node {
     def props_file = 'environments/cloudformation-dev.properties';
     //aws stack
     def awsStackName = 'dev-minh-stack'
-    stage('Get branch name') {
-        //this will check the current branch (with *), and only keep the branch name (omit * and space)
-        GIT_BRANCH = utils.getGitBranch()
-    }
-    if (GIT_BRANCH == 'dev_aws') {
+    def artifactoryUrl = 'http://localhost:8081/artifactory'
+    def snapshotRepo = 'snapshot-repo'
+    def releaseRepo = 'release-repo'
+    if (env.version.contains("SNAPSHOT"))s {
         stage('Download artifact and push on s3 bucket') {
             //reads property file and create parameter strings
             //using Pipeline Utility Steps plugin
             def props = readProperties file: props_file
-            def artifactName = props['Lambda1ArtifactName']
-            url = "http://localhost:8081/artifactory/snapshot-repo/com/minh/aws/java-lambda-sample/1.0.5-SNAPSHOT/${artifactName}"
+            //maven convention
+            def artifactName = env.artifactId + "-" + env.version
+            url = "${artifactoryUrl}/${snapshotRepo}/${env.groupId.replace(".", "/")}/${env.artifactId}/${env.version}/${artifactName}"
             fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
             //download file
             //fileOperations([fileDownloadOperation(password: '', targetFileName: "$fileName", targetLocation: '.', url: "$url", userName: '')])
@@ -30,14 +30,14 @@ node {
             sh "curl -L ${url} -o  $output"
             //upload to s3
             //need to use timestamp in lambda tag to force update to lambda stack
-           def timestamp = sh(script:"date +%s",returnStdout: true).trim()
-            props['Lambda1ArtifactName'] +=  "-$timestamp"
+            def timestamp = sh(script: "date +%s", returnStdout: true).trim()
+            props['Lambda1ArtifactName'] = "$artifactName-$timestamp"
 
             sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['Lambda1ArtifactName']}"
             //check if stack exists
-            stackExists = sh (
+            stackExists = sh(
                     script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text",
-                    returnStatus:true)
+                    returnStatus: true)
             //create lambda function
             def paramString = ""
             props.each { k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
@@ -46,7 +46,7 @@ node {
                         script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
                         returnStdout: true
                 ).trim()
-            }else{
+            } else {
                 print "Stack already exists."
                 stackUpdateSuccessful = sh(
                         script: "aws cloudformation update-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
