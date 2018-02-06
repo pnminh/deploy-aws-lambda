@@ -20,7 +20,7 @@ node {
             //using Pipeline Utility Steps plugin
             def props = readProperties file: props_file
             //maven convention
-            def artifactName = env.artifactId + "-" + env.version
+            def artifactName = "${env.artifactId}-${env.version}.${env.extension}"
             url = "${artifactoryUrl}/${snapshotRepo}/${env.groupId.replace(".", "/")}/${env.artifactId}/${env.version}/${artifactName}"
             fileName = url.substring(url.lastIndexOf('/') + 1, url.length());
             //download file
@@ -30,7 +30,7 @@ node {
             //upload to s3
             //need to use timestamp in lambda tag to force update to lambda stack
             def timestamp = sh(script: "date +%s", returnStdout: true).trim()
-            props['Lambda1ArtifactName'] = "$artifactName-$timestamp"
+            props['Lambda1ArtifactName'] = "${env.artifactId}-${env.version}-${timestamp}.${env.extension}"
 
             sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['Lambda1ArtifactName']}"
             //check if stack exists
