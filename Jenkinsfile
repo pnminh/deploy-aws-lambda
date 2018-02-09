@@ -48,7 +48,7 @@ node {
             } else {
                 print "Stack already exists."
                 stackUpdateSuccessful = sh(
-                        script: "aws cloudformation update-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
+                        script: "aws cloudformation update-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml --region us-west-2",
                         returnStatus: true
                 )
 
