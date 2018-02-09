@@ -35,7 +35,7 @@ node {
             sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['Lambda1ArtifactName']}"
             //check if stack exists
             stackExists = sh(
-                    script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text",
+                    script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text --region us-west-2",
                     returnStatus: true)
             //create lambda function
             def paramString = ""
