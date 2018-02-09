@@ -42,7 +42,7 @@ node {
             props.each { k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
             if (stackExists != 0) {
                 lambda = sh(
-                        script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml",
+                        script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml --region us-west-2",
                         returnStdout: true
                 ).trim()
             } else {
