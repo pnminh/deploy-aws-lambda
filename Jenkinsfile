@@ -1,4 +1,5 @@
 node {
+    echo sh(returnStdout: true, script: 'id')
     // Clean workspace before doing anything
     deleteDir()
     // Mark the code checkout 'stage'....
@@ -34,7 +35,7 @@ node {
             stage('Create aws yml file from template'){
                 def paramList= props.collect { key, value -> return key+'='+value }
                 withEnv(paramList){
-                    docker.image('smebberson/alpine-confd:3.1.0').withRun('-u root').inside {
+                    docker.image('smebberson/alpine-confd:3.1.0').inside {
                         sh "printenv"
                         sh "confd -onetime -backend env -confdir confd -config-file confd/conf.d/lambda.toml"
                     }
