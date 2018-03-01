@@ -34,7 +34,7 @@ node {
             stage('Create aws yml file from template'){
                 def paramList= props.collect { key, value -> return key+'='+value }
                 withEnv(paramList){
-                    docker.image('smebberson/alpine-confd:3.1.0').inside {
+                    docker.image('smebberson/alpine-confd:3.1.0').withRun('-u root').inside {
                         sh "printenv"
                         sh "confd -onetime -backend env -confdir confd -config-file confd/conf.d/lambda.toml"
                     }
