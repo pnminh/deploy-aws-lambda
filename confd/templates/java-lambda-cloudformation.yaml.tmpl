@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Resources:
+  MimePreprocessLambda:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Code: { S3Bucket: "{{getenv "LambdaS3Bucket"}}", S3Key: {{getenv "LambdaS3Directory"}}/{{getenv "Lambda1ArtifactName"}}}
+      FunctionName: { 'Fn::Sub': dev-minh-lambda-test }
+      Handler: 'com.dice.aws.lambda.LambdaRequestHandler::handleRequest'
+      MemorySize: {{getenv "Lambda1MemorySize"}}
+      Role: {{getenv "Lambda1Role"}}
+      Runtime: java8
+      Timeout: {{getenv "Lambda1Timeout"}}

@@ -31,24 +31,32 @@ node {
             //need to use timestamp in lambda tag to force update to lambda stack
             def timestamp = sh(script: "date +%s", returnStdout: true).trim()
             props['Lambda1ArtifactName'] = "${env.artifactId}-${env.version}-${timestamp}.${env.extension}"
-
+            stage('Create aws yml file from template'){
+                def paramList= props.collect { key, value -> return key+'='+value }
+                withEnv(paramList){
+                    docker.image('smebberson/alpine-confd:3.1.0').inside {
+                        sh "printenv"
+                        sh "confd -onetime -backend env -confdir confd -config-file confd/conf.d/lambda.toml"
+                    }
+                }
+            }
             sh "aws s3 cp ${artifactName} s3://${props['LambdaS3Bucket']}/${props['LambdaS3Directory']}/${props['Lambda1ArtifactName']}"
             //check if stack exists
             stackExists = sh(
-                    script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text --region us-west-2",
+                    script: "aws cloudformation describe-stacks --stack-name ${awsStackName} --query 'Stacks[0].StackName' --output text",
                     returnStatus: true)
             //create lambda function
             def paramString = ""
             props.each { k, v -> paramString += "ParameterKey=${k},ParameterValue=${v} " }
             if (stackExists != 0) {
                 lambda = sh(
-                        script: "aws cloudformation create-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml --region us-west-2",
+                        script: "aws cloudformation create-stack --stack-name $awsStackName --template-body file://templates/java-lambda-cloudformation.yaml",
                         returnStdout: true
                 ).trim()
             } else {
                 print "Stack already exists."
                 stackUpdateSuccessful = sh(
-                        script: "aws cloudformation update-stack --stack-name $awsStackName --parameters ${paramString} --template-body file://templates/java-lambda-cloudformation.yaml --region us-west-2",
+                        script: "aws cloudformation update-stack --stack-name $awsStackName --template-body file://templates/java-lambda-cloudformation.yaml",
                         returnStatus: true
                 )
 
