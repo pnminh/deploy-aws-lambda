@@ -5,7 +5,7 @@
 src = "java-lambda-cloudformation.yaml.tmpl"
 
 # The location to place the rendered configuration file
-dest = "./templates/java-lambda-cloudformation.yaml"
+dest = "./java-lambda-cloudformation.yaml"
 
 # The etcd keys or directory to watch.  This is where the information to fill in
 # the template will come from.
